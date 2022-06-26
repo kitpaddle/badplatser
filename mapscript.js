@@ -47,6 +47,7 @@ let panelLayers = new L.control.layers(baseMaps);
 panelLayers.addTo(map);
 
 
+// Async function that calls API and fetches data
 async function loadBadplatser(url, options){
   
   const response = await fetch(url+'/feature');
@@ -62,9 +63,6 @@ async function loadBadplatser(url, options){
     for (let j=0; j<details.length; j++){
       if(id == details[j].nutsCode){
         detail = details[j];
-        if(id == "SE0110182000001238"){
-          console.log(detail);
-        }
       }
     }
     data[i].properties.algalValue = detail.algalValue;
@@ -80,13 +78,14 @@ async function loadBadplatser(url, options){
     data[i].properties.sampleDate = detail.sampleDate;
     data[i].properties.sampleValue = detail.sampleValue;
   }
-  console.log(data[34]);
   d.features = data;
   const tempLayer = L.geoJSON(d, options);
   tempLayer.addTo(map);
   
 }
 
+// Leaflet style used to style each "badplats" and color code them
+// Also adds the popup info prompt on each
 const badplatserStyle = {
   pointToLayer: function (feature, latlng) { 
     let p = feature.properties.classificationText;
@@ -108,6 +107,7 @@ const badplatserStyle = {
   onEachFeature: badplatsFeatures
 }
 
+// defines the popup info prompt
 function badplatsFeatures(feature, layer){
 
   let value = 'Uppgift saknas';
@@ -147,4 +147,5 @@ function badplatsFeatures(feature, layer){
   layer.bindPopup(output);
 }
 
+// Call the actual function to fetch data
 loadBadplatser(T_BADPLATSER, badplatserStyle);
