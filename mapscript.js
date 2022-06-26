@@ -26,11 +26,11 @@ L.control.locate().addTo(map);
 // Creating Basemaps
 const baseMap = L.tileLayer(URL_OSM, {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> kitpaddle',
-  minZoom: 10
+  minZoom: 7
 }).addTo(map);
 const baseMapSat = new L.tileLayer(URL_SAT, {
   attribution: '&copy; <a href="https://carto.com/">CartoDB</a> & <a href="https://www.openstreetmap.org/copyright">OSM</a>& <a href="https://www.esri.com/en-us/home">ESRI</a> kitpaddle',
-  minZoom: 10,
+  minZoom: 7,
   updateWhenIdle: true,
   keepBuffer: 5,
   edgeBufferTiles: 2
@@ -52,7 +52,8 @@ async function loadBadplatser(url, options){
   
   const response = await fetch(url+'/feature');
   let d = await response.json();
-  let data = d.features.filter( i => sthlmKommuner.some(e => e == i.properties.KMN_NAMN));
+  //let data = d.features.filter( i => sthlmKommuner.some(e => e == i.properties.KMN_NAMN));
+  let data = d.features;
 
   const r = await fetch(url+'/detail')
   const details = await r.json();
@@ -78,22 +79,44 @@ async function loadBadplatser(url, options){
     data[i].properties.sampleDate = detail.sampleDate;
     data[i].properties.sampleValue = detail.sampleValue;
   }
+  console.log(data[54]);
   d.features = data;
   const tempLayer = L.geoJSON(d, options);
   tempLayer.addTo(map);
   
 }
 
+   let now = new Date();
+    console.log(+now);
+    console.log(now-7889400000);
+
 // Leaflet style used to style each "badplats" and color code them
 // Also adds the popup info prompt on each
 const badplatserStyle = {
   pointToLayer: function (feature, latlng) { 
+    /*
     let p = feature.properties.classificationText;
     let colorStatus = '#999999';// Grey for unspecified
     if(p == 'Dålig kvalitet') colorStatus = '#d73027';
     else if(p == 'Tillfredställande kvalitet') colorStatus = '#d9ef8b';
     else if(p == 'Bra kvalitet') colorStatus = '#91cf60';
     else if(p == 'Utmärkt kvalitet') colorStatus = '#1a9850';
+    */
+    
+    let p = feature.properties.sampleValue;
+    let colorStatus = '#999999';// Grey for unspecified
+    if(p == 3) colorStatus = '#d73027';
+    else if(p == 2) colorStatus = '#d9ef8b';
+    else if(p == 1) colorStatus = '#1a9850';
+
+    let c = feature.properties.classificationText;
+    if(c == 'Dålig kvalitet') colorStatus = '#d73027';
+    else if(c == 'Tillfredställande kvalitet') colorStatus = '#d9ef8b';
+
+    let now = new Date();
+    if(feature.properties.sampleDate < now-7889400000){
+      colorStatus = '#999999';
+    }
 
     return L.circleMarker(latlng, {
       radius: 7,
