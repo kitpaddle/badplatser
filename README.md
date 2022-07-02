@@ -8,4 +8,4 @@ They are color coded:
 - YELLOW shows that either the classification is medium or the bacteria-levels are heightened. Bathing is likely allowed but check the local government website for more information.
 - GREEN shows that the site was controllled within the last 3 months and no dangerous levels of bacteria or algae was measured at the times.
 
-This website only displays information made available by the government. Deciding to swim at any location, and any risk incurred is your sole responsibility.
+This website only displays information made available by the government. Deciding to swim at any location, and any risk incurred, is your sole responsibility.
